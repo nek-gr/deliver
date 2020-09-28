@@ -1,0 +1,13 @@
+{
+    "name": "webmaster/deliver",
+    "description": "test",
+    "authors": [
+        {
+            "name": "Nikita Grishchenkov",
+            "email": "developer29@ya.ru"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+}
+}
