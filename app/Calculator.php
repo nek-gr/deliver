@@ -14,12 +14,17 @@ class Calculator
     public function calculate($expression)
     {
         $expression = str_replace(',', '.', $expression);
+        $expression = str_replace(' ', '', $expression);
+        $expression = trim($expression,implode($this->priority));
+        if (!preg_match("/^[0-9\+\*\-\/\(\)\.\s]+$/",$expression)){
+            return "incorrect input data";
+        }
         while (strpos($expression, '(') || strpos($expression, ')')) {
             if ($this->debug)
                 Helper::echoPrint($expression);
             $expression = preg_replace_callback('/\(([^\(\)]+)\)/', 'self::callbackArray', $expression);
         }
-        Helper::echoPrint("result: {$this->callbackString($expression)}");
+        return $this->callbackString($expression);
 
     }
 
@@ -34,10 +39,10 @@ class Calculator
         if ($this->debug)
             Helper::echoPrint($expression);
         $decimal = "-?\d+(?:[\.,]\d+)*";
-        $actions = "[\+\-\*\/\^]";
+        $actionsRegex = "[\+\-\*\/\^]";
         if (is_numeric($expression)) {
             return $expression;
-        } elseif (preg_match("/^($decimal)($actions)($decimal)$/", $expression, $match)) {
+        } elseif (preg_match("/^($decimal)($actionsRegex)($decimal)$/", $expression, $match)) {
             return $this->compute($match[2], $match[1], $match[3]);
         } else {
             foreach ($this->priority as $action) {
